@@ -1,12 +1,9 @@
 package com.revature.challenge;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.revature.models.Address;
 import com.revature.models.MobileNumber;
@@ -53,8 +50,14 @@ public class StreamTest {
         ****************************************************************************/
 
         
+        boolean DEBUG = true;
+        
         // Code your Solution here
-
+        Optional<Student> possiblyBob = students.stream() 
+        		                        .filter(s -> s.getName().equals("Bob"))
+        		                        .findFirst();
+        if(DEBUG) System.out.println("============Answer to 1 done as a cohort ==========");
+        System.out.println(possiblyBob.isPresent() ? possiblyBob.get().getName() : "No student found");
         
         
         
@@ -67,16 +70,28 @@ public class StreamTest {
 
         
         // Code your Solution here
-
+        Optional<Student> s1 = students.stream()
+        		                       .filter(s-> s.getAddress().getZipcode().equals("1235"))
+        		                       .findFirst();
         
-        
+        if(DEBUG) System.out.println("============Answer to 2 done as a cohort ==========");
+        System.out.println(s1.isPresent() ? s1.get().getName() : "No student found");
         
         
         /****************************************************************************
          (3) Get all the students that have the mobile number "3333" and print their
              names to the console.
         *****************************************************************************/
-
+        if(DEBUG) System.out.println("============ Answer to Question 3 ===========");
+        
+        List<Student> studentsWith3333 = 
+        students.stream()
+                .filter(s -> s.getMobileNumbers()
+                		.stream()
+                		.anyMatch(num -> num.getNumber().equals("3333")))
+                		.collect(Collectors.toList());
+  
+        studentsWith3333.forEach(s-> System.out.println(s.getName()));
         
         // Code your Solution here
 
@@ -88,10 +103,20 @@ public class StreamTest {
          (4) Get all student having mobile number "1233" and "1234" and print their
              names to the console.
          ***************************************************************************/
-
-        
+         if(DEBUG) {
+         System.out.println("=============Solution to #4 ==============");
+         }
         // Code your Solution here
-        
+        List<Student> studentsWith1233And1234 = students.stream()
+        		           .filter(s -> s.getMobileNumbers()
+        		           .stream()
+        		           .anyMatch(num -> num.getNumber().equals("1233")))
+        		           .filter(s-> s.getMobileNumbers()
+        		           .stream()
+        		           .anyMatch(num -> num.getNumber().equals("1234")))
+        		           .collect(Collectors.toList());
+        		        		   
+        studentsWith1233And1234.forEach(s-> System.out.println(s.getName()));
         
         
         
@@ -116,8 +141,22 @@ public class StreamTest {
         List<TempStudent> tmpStudents = Arrays.asList(tmpStud1, tmpStud2);
         
         // Code your Solution here, don't touch the code above
- 
-
+       
+        //based on stack over flow 
+        //stackoverflow.com/questions/35650974/create-list-of-object-from-another-using-java-8-streams
+        
+        // Create a new Student for each student in the strea list to resolve type...then collect them and then
+        // push them to a list
+        
+       List<Student> studentList = tmpStudents.stream()
+    		                                  .map(s -> new Student(s.name, s.age, s.address, s.mobileNumbers))
+    		                                  .collect(Collectors.toList());
+       
+        if(DEBUG) System.out.println("==================Answer to Number 5 with help from stack overflow =======");
+        System.out.println(studentList);
+       
+       
+        
         
         
         
@@ -130,8 +169,11 @@ public class StreamTest {
 
         
         // Code your Solution here
-
-        
+        List<String> studentNames = studentList.stream()
+        		                               .map(s -> new String(s.getName()))
+        		                               .collect(Collectors.toList());
+        if(DEBUG) System.out.println("================ Answer to Number 6 ==========");
+        System.out.println(studentNames);
         
         
         
@@ -139,8 +181,13 @@ public class StreamTest {
           (7) Convert List<Students> to a single String called name with just their names.
           	  Print that String to the console.
         ****************************************************************************/
-
-        
+       if(DEBUG) System.out.println("==============Answer to Number 7 assist from techiedelight.com/convert-list-to-string===============");
+      
+        //joining method on collectors will concat results with a specified delimiter
+        String name = studentList.stream().map(s -> s.getName()).collect(Collectors.joining(" "));
+        		                          
+      
+        System.out.print(name);
         // Code your Solution here
 
         
@@ -155,9 +202,10 @@ public class StreamTest {
             Arrays.asList("Bob", "Danny", "Alice", "Eddie", "Cathy");
  
         // Code your Solution here, don't touch the code above
-
-        
-        
+        	if(DEBUG) System.out.println("==========Answer to number 8 ======");
+       
+        	System.out.println(nameList.stream().map(String::toUpperCase).collect(Collectors.toList()));
+        	
         
         
         /****************************************************************************
@@ -167,10 +215,14 @@ public class StreamTest {
         List<String> namesList =
             Arrays.asList("Bob", "Danny", "Alice", "Eddie", "Cathy");
  
-        // Code your Solution here, don't touch the code above
-
-
         
+        // Code your Solution here, don't touch the code above
+ 
+        List<String> sortedNamesList =
+        		namesList.stream().sorted().collect(Collectors.toList());
+        
+        if(DEBUG) System.out.println("==================Answer to Number 9 ==========");
+        sortedNamesList.stream().forEach(System.out::println);
         
  
     }
